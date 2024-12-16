@@ -235,23 +235,34 @@ namespace PPTP
         }
       }
 
-      void tbbrange2dmult(VectorType const& x, VectorType& y) const
-     {
-    	assert(x.size() >= m_nrows);
-    	assert(y.size() >= m_nrows);
+    void tbbrange2dmult(VectorType const& x, VectorType& y) const
+    {
+       assert(x.size() >= m_nrows);
+       assert(y.size() >= m_nrows);
 
-    	tbb::parallel_for(tbb::blocked_range2d<size_t>(0, m_nrows, 0, m_ncols),
-        	& {
-                for (size_t i = r.rows().begin(); i != r.rows().end(); ++i) 
-		{
-                	for (size_t j = r.cols().begin(); j != r.cols().end(); ++j) 
-			{
-                    		y[i] += x[i * m_ncols + j] * m_matrix[i][j];
-                	}
-            	}
-        	}
-    	);
-     }
+       tbb::spin_mutex mutex;
+
+       tbb::parallel_for(
+           tbb::blocked_range2d<std::size_t>(0, m_nrows, m_chunk_size, 0, m_nrows, m_chunk_size),
+            [&](const tbb::blocked_range2d<std::size_t>& range)
+           {
+               for (std::size_t i = range.rows().begin(); i < range.rows().end(); ++i)
+               {
+                   const double* row_start = &m_values[i * m_nrows];
+                   double row_sum = 0.0;
+
+                   for (std::size_t j = range.cols().begin(); j < range.cols().end(); ++j)
+                   {
+                       row_sum += row_start[j] * x[j];
+                   }
+
+                   {
+                       tbb::spin_mutex::scoped_lock lock(mutex);
+                       y[i] += row_sum;
+                   }
+                }
+           });
+    }
 
     private:
       // number of lines

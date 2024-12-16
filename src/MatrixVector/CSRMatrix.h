@@ -86,53 +86,6 @@ class CSRMatrix
       }
     }
 
-    
-    void mpimult(VectorType const& x, VectorType& y) const
-{
-    int rank, size;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-    std::size_t local_nrows = m_nrows / size;
-    std::size_t start_row = rank * local_nrows;
-    std::size_t end_row = (rank == size - 1) ? m_nrows : start_row + local_nrows;
-
-    VectorType local_y(local_nrows, 0.0);
-
-    for (std::size_t irow = start_row; irow < end_row; ++irow)
-    {
-        double value = 0;
-        for (int k = m_kcol[irow]; k < m_kcol[irow + 1]; ++k)
-        {
-            value += m_values[k] * x[m_cols[k]];
-        }
-        local_y[irow - start_row] = value;
-    }
-
-    // Collecte des résultats partiels
-    std::vector<int> recvcounts(size);
-    std::vector<int> displs(size);
-    for (int i = 0; i < size; ++i)
-    {
-        recvcounts[i] = (i == size - 1) ? m_nrows - i * local_nrows : local_nrows;
-        displs[i] = i * local_nrows;
-    }
-
-
-    MPI_Gatherv(local_y.data(), local_nrows, MPI_DOUBLE, y.data(), recvcounts.data(), displs.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-    // Diffusion des résultats à tous les processus
-    MPI_Bcast(y.data(), m_nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-}
-
-    void ompmult(VectorType const& x, VectorType& y) const
-    {
-      assert(x.size()>=m_nrows) ;
-      assert(y.size()>=m_nrows) ;
-      {
-         // todo OPENMP
-      }
-    }
   public:
     // number of lines
     std::size_t         m_nrows = 0;
