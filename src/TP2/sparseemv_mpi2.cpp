@@ -151,7 +151,7 @@ int main(int argc, char** argv)
   if (rank == 0)
   {
       double normy2 = PPTP::norm2(y2);
-      std::cout << "||y2|| = " << normy2 << std::endl;
+      std::cout << "||y2|| = " << normy2 << "       NP:" << size << "     NX:" << vm["nx"].as<int>() <<std::endl;
   }
 
   delete[] sendcounts;
