@@ -27,22 +27,27 @@ To install dependencies (on Ubuntu-based systems), you can run:
 
 ```bash
 sudo apt-get install cmake g++ libomp-dev libtbb-dev libglfw3-dev libglad-dev libfmt-dev
-
-### Step 1: Create a build directory and navigate to it
-
-```bash
+Step 1: Create a build directory and navigate to it
 mkdir build
 cd build
-
-### Step 2: Install dependencies using Conan
-
-```bash
+Step 2: Install dependencies using Conan
 conan install .. -of . --build=missing
-
-### Step 3: Install dependencies using Conan
-
-```bash
+Step 3: Configure the project with CMake
 cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release
+Step 4: Build the project
+cmake --build .
+Running the Project
+After building the project, you can run the simulation in one of the three modes: sequential, OpenMP, or TBB. The executable is located in the src directory.
 
+To run the program, use the following command:
 
+cd src
+./freebirds mode nbAgents NbThreads
+Where:
 
+mode is the execution mode:
+0: Sequential (no parallelization)
+1: OpenMP (parallelization using OpenMP)
+2: TBB (parallelization using Intel TBB)
+nbAgents is the number of agents in the simulation.
+NbThreads is the number of threads to use (if applicable, for OpenMP or TBB).
