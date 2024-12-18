@@ -78,5 +78,12 @@ int main(int argc, char* argv[]) {
         delete agent;
     }
 
+    std::ofstream outfile;
+    outfile.open("/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/src/Bench_birds.log",std::ios_base::app);
+    outfile << "Simulation completed in mode " << mode
+            << " with " << numThreads << " threads, "
+            << numAgents << " birds, "
+            << "in " << duration.count() << " ms." << std::endl;
+
     return 0;
 }
