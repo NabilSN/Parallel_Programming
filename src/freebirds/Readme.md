@@ -1,3 +1,4 @@
+
 # Project Name: Boid Simulation
 
 ## Description
@@ -26,28 +27,54 @@ Before running the project, ensure you have the following installed:
 To install dependencies (on Ubuntu-based systems), you can run:
 
 ```bash
-sudo apt-get install cmake g++ libomp-dev libtbb-dev libglfw3-dev libglad-dev libfmt-dev
-Step 1: Create a build directory and navigate to it
+sudo apt-get install cmake g++ libomp-dev libtbb-dev libglfw3-dev libglad-dev libfmt-dev conan
+```
+
+## Building the Project
+
+### Step 1: Create a build directory and navigate to it
+
+```bash
 mkdir build
 cd build
-Step 2: Install dependencies using Conan
+```
+
+### Step 2: Install dependencies using Conan
+
+```bash
 conan install .. -of . --build=missing
-Step 3: Configure the project with CMake
+```
+
+### Step 3: Generate Makefiles using CMake
+
+```bash
 cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release
-Step 4: Build the project
+```
+
+### Step 4: Build the project
+
+```bash
 cmake --build .
-Running the Project
-After building the project, you can run the simulation in one of the three modes: sequential, OpenMP, or TBB. The executable is located in the src directory.
+```
+
+This will generate the executable `freebirds` inside the `src` directory.
+
+## Running the Project
+
+After building the project, you can run the simulation in one of the three modes: **sequential**, **OpenMP**, or **TBB**. The executable is located in the `src` directory.
 
 To run the program, use the following command:
 
+```bash
 cd src
 ./freebirds mode nbAgents NbThreads
+```
+
 Where:
 
-mode is the execution mode:
-0: Sequential (no parallelization)
-1: OpenMP (parallelization using OpenMP)
-2: TBB (parallelization using Intel TBB)
-nbAgents is the number of agents in the simulation.
-NbThreads is the number of threads to use (if applicable, for OpenMP or TBB).
+- `mode` is the execution mode:
+    - `0`: Sequential (no parallelization)
+    - `1`: OpenMP (parallelization using OpenMP)
+    - `2`: TBB (parallelization using Intel TBB)
+- `nbAgents` is the number of agents in the simulation.
+- `NbThreads` is the number of threads to use (if applicable, for OpenMP or TBB).
