@@ -28,3 +28,21 @@ To install dependencies (on Ubuntu-based systems), you can run:
 ```bash
 sudo apt-get install cmake g++ libomp-dev libtbb-dev libglfw3-dev libglad-dev libfmt-dev
 
+### Step 1: Create a build directory and navigate to it
+
+```bash
+mkdir build
+cd build
+
+### Step 2: Install dependencies using Conan
+
+```bash
+conan install .. -of . --build=missing
+
+### Step 3: Install dependencies using Conan
+
+```bash
+cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release
+
+
+
