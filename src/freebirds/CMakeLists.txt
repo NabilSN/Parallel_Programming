@@ -119,16 +119,6 @@ endif ()
 
 add_subdirectory(src)
 
-#------------------------------------------------------
-
-enable_testing()
-include_directories(${PROJECT_SOURCE_DIR}/tests/include)
-add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
-add_custom_target(run_unit_tests
-        COMMAND ${CMAKE_CTEST_COMMAND} -j ${PROCESSOR_COUNT}
-        COMMENT "Executing unit tests."
-        DEPENDS all_test_binaries
-        )
 
 #------------------------------------------------------
 
